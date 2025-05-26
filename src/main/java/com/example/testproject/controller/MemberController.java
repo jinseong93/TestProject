@@ -31,15 +31,4 @@ public class MemberController {
         return "redirect:/member/login";
     }
 
-    @GetMapping("/signup")
-    public String signupForm(Model model) {
-
-        return "member/signup";
-    }
-
-    @PostMapping("/signup")
-    public String signup() {
-        return "redirect:/member/login";
-    }
-
 } 
