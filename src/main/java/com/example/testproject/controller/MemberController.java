@@ -19,9 +19,8 @@ public class MemberController {
 
     @PostMapping("/login")
     public String login(MemberDTO memberDTO) {
-        System.out.println("로그인 시도");
-        System.out.println("ID : "     + memberDTO.getUserId());
-        System.out.println("비밀번호 : " + memberDTO.getPassword());
+        System.out.println("로그인 시도 - ID: " + memberDTO.getUserId());
+        System.out.println("비밀번호: " + memberDTO.getPassword());
         
         if ("test".equals(memberDTO.getUserId()) && "1234".equals(memberDTO.getPassword())) {
             System.out.println("로그인 성공");
@@ -31,5 +30,15 @@ public class MemberController {
         return "redirect:/member/login";
     }
 
+    @GetMapping("/signup")
+    public String signupForm(Model model) {
+
+        return "member/signup";
+    }
+
+    @PostMapping("/signup")
+    public String signup() {
+        return "redirect:/member/login";
+    }
 
 } 
