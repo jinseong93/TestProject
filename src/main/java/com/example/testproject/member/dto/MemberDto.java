@@ -1,9 +1,9 @@
-package com.example.testproject.dto;
+package com.example.testproject.member.dto;
 
 import lombok.Data;
 
 @Data
-public class MemberDTO {
+public class MemberDto {
     private String userId;    // 로그인용 ID
     private String password;  // 비밀번호
     private String name;      // 사용자 이름
