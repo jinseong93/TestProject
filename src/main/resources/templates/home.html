@@ -6,6 +6,6 @@
 </head>
 <body>
     <h1>Home</h1>
-    <p th:text="${message}"></p>
+    <p th:text="${usrId != null ? usrId + '님 환영합니다' : 'Spring Boot TEST'}"></p>
 </body>
 </html>
