@@ -23,18 +23,19 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(MemberDto memberDto) {
-        Member member = memberService.login(memberDto.getUserId(), memberDto.getPassword());
-        System.out.println("로그인");
-        System.out.println("usrId : "    + memberDto.getUserId());
-        System.out.println("password : " + memberDto.getPassword());
-        System.out.println("member : "   + member);
-        if (member != null) {
-            // 로그인 성공
+    public String login(MemberDto memberDto, Model model) {
+        try {
+            // 로그인
+            Member member = memberService.login(memberDto.getUserId(), memberDto.getPassword());
+            if (member == null) {
+                model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+                return "member/login";
+            }
             return "redirect:/?userId=" + member.getUserId();
+        } catch (Exception e) {
+            model.addAttribute("error", "로그인에 실패했습니다.");
+            return "member/login";
         }
-        // 로그인 실패
-        return "redirect:/member/login";
     }
 
     @GetMapping("/signUp")
@@ -44,30 +45,49 @@ public class MemberController {
     }
 
     @PostMapping("/signUp")
-    public String createMember(@ModelAttribute MemberDto memberDto) {
-        System.out.println(memberDto);
-        Member savedMember = memberService.createMember(memberDto);
-        System.out.println(savedMember);
-        if (savedMember == null) {
+    public String createMember(@ModelAttribute MemberDto memberDto, Model model) {
+        try {
+            // ID 중복 체크
+            if (memberService.findMemberByUserId(memberDto.getUserId()) != null) {
+                model.addAttribute("error", "이미 사용 중인 아이디입니다.");
+                return "member/signUp";
+            }
+            // 회원가입
+            Member savedMember = memberService.createMember(memberDto);
+            if (savedMember == null) {
+                model.addAttribute("error", "회원가입에 실패했습니다.");
+                return "member/signUp";
+            }
+            return "redirect:/member/login";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "회원가입에 실패했습니다.");
             return "member/signUp";
         }
-        return "redirect:/member/login";
     }
 
     @GetMapping("/memberInfo")
     @ResponseBody
-    public Map<String, Object> findMemberByUserId (@RequestParam String userId) {
+    public Map<String, Object> findMemberByUserId (@RequestParam(required = false) String userId) {
         Map<String, Object> paramMap = new HashMap<>();
-        Member member = memberService.findMemberByUserId (userId);
-        System.out.println(member);
-        
-        if (member == null) {
-            paramMap.put("resultMsg", "회원정보없음");
-        } else {
-            paramMap.put("resultMsg", "회원정보 조회 성공");
-            paramMap.put("member", member);
+        // userId 체크
+        if (userId == null || userId.trim().isEmpty()) {
+            paramMap.put("resultMsg", "아이디를 입력해주세요.");
+            return paramMap;
         }
-        System.out.println(paramMap);
+
+        try {
+            // 회원정보 조회
+            Member member = memberService.findMemberByUserId (userId);
+            if (member == null) {
+                paramMap.put("resultMsg", "회원정보 없음");
+            } else {
+                paramMap.put("resultMsg", "회원정보 조회 성공");
+                paramMap.put("member", member);
+            }
+        } catch (Exception e) {
+            paramMap.put("resultMsg", "회원정보 조회에 실패했습니다.");
+        }
         return paramMap;
     }
 }

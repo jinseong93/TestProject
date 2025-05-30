@@ -10,7 +10,9 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@RequestParam(required = false) String userId, Model model) {
-        model.addAttribute("userId", userId);
+        if (userId != null && !userId.trim().isEmpty()) {
+            model.addAttribute("userId", userId);
+        }
         return "home";
     }
 }   
