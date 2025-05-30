@@ -78,7 +78,7 @@ public class MemberController {
 
         try {
             // 회원정보 조회
-            Member member = memberService.findMemberByUserId (userId);
+            Member member = memberService.findMemberByUserId(userId);
             if (member == null) {
                 paramMap.put("resultMsg", "회원정보 없음");
             } else {
