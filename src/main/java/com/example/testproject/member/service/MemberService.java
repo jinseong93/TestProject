@@ -15,7 +15,7 @@ public class MemberService {
         return memberRepository.findByUserIdAndPassword(userId, password);
     }
 
-    public Member registerMember(MemberDto memberDto) {
+    public Member createMember (MemberDto memberDto) {
         Member member = new Member();
         member.setUserId(memberDto.getUserId());
         member.setPassword(memberDto.getPassword());
@@ -28,4 +28,7 @@ public class MemberService {
         }
     }
 
+    public Member findMemberByUserId (String userId) {
+        return memberRepository.findByUserId(userId);
+    }
 } 

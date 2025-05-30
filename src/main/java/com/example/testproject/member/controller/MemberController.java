@@ -1,16 +1,14 @@
 package com.example.testproject.member.controller;
 
-import com.example.testproject.member.repository.MemberRepository;
 import com.example.testproject.member.repository.entity.Member;
 import com.example.testproject.member.dto.MemberDto;
 import com.example.testproject.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/member")
@@ -46,13 +44,30 @@ public class MemberController {
     }
 
     @PostMapping("/signUp")
-    public String signUp(@ModelAttribute MemberDto memberDto) {
+    public String createMember(@ModelAttribute MemberDto memberDto) {
         System.out.println(memberDto);
-        Member savedMember = memberService.registerMember(memberDto);
+        Member savedMember = memberService.createMember(memberDto);
         System.out.println(savedMember);
         if (savedMember == null) {
             return "member/signUp";
         }
         return "redirect:/member/login";
     }
-} 
+
+    @GetMapping("/memberInfo")
+    @ResponseBody
+    public Map<String, Object> findMemberByUserId (@RequestParam String userId) {
+        Map<String, Object> paramMap = new HashMap<>();
+        Member member = memberService.findMemberByUserId (userId);
+        System.out.println(member);
+        
+        if (member == null) {
+            paramMap.put("resultMsg", "회원정보없음");
+        } else {
+            paramMap.put("resultMsg", "회원정보 조회 성공");
+            paramMap.put("member", member);
+        }
+        System.out.println(paramMap);
+        return paramMap;
+    }
+}
