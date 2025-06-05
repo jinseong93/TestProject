@@ -1,34 +1,45 @@
 package com.example.testproject.member.service;
 
-import com.example.testproject.member.repository.MemberRepository;
-import com.example.testproject.member.repository.entity.Member;
 import com.example.testproject.member.dto.MemberDto;
+import com.example.testproject.member.entity.Member;
+import com.example.testproject.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
+    
+    private final MemberRepository memberRepository;
+    
     @Autowired
-    private MemberRepository memberRepository;
-
-    public Member login(String userId, String password) {
-        return memberRepository.findByUserIdAndPassword(userId, password);
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
-
-    public Member createMember (MemberDto memberDto) {
-        Member member = new Member();
-        member.setUserId(memberDto.getUserId());
-        member.setPassword(memberDto.getPassword());
-        member.setName(memberDto.getName());
-        member.setEmail(memberDto.getEmail());
-        try {
-            return memberRepository.save(member);
-        } catch (Exception e) {
-            return null;
+    
+    @Transactional
+    public Member createMember(MemberDto request) {
+        // 이메일 중복 체크
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("이미 존재하는 이메일입니다");
         }
+        
+        Member member = new Member();
+        member.setName(request.getName());
+        member.setEmail(request.getEmail());
+        member.setPassword(request.getPassword()); // 실제로는 비밀번호 암호화 필요
+        member.setPhone(request.getPhone());
+        
+        return memberRepository.save(member);
     }
-
-    public Member findMemberByUserId (String userId) {
-        return memberRepository.findByUserId(userId);
+    
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
+    }
+    
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
     }
 } 

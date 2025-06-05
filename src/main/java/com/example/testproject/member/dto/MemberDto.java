@@ -1,11 +1,13 @@
 package com.example.testproject.member.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class MemberDto {
-    private String userId;    // 로그인용 ID
-    private String password;  // 비밀번호
-    private String name;      // 사용자 이름
-    private String email;     // 이메일
+    private String name;
+    private String email;
+    private String password;
+    private String phone;
 } 

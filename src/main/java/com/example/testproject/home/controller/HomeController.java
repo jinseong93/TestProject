@@ -16,11 +16,7 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(@RequestParam(required = false) String userId, Model model) {
-        // userId 체크
-        if (memberService.findMemberByUserId(userId) != null) {
-            model.addAttribute("userId", userId);
-        }
+    public String home() {
 
         return "home";
     }
