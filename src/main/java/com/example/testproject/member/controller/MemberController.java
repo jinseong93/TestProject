@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
@@ -19,20 +22,29 @@ public class MemberController {
     }
     
     @PostMapping
-    public ResponseEntity<Member> createMember(@RequestBody MemberDto request) {
+    public ResponseEntity<Map<String, Object>> createMember(@RequestBody MemberDto request) {
         Member member = memberService.createMember(request);
-        return ResponseEntity.ok(member);
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", member.getName());
+        response.put("email", member.getEmail());
+        return ResponseEntity.ok(response);
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> findMember(@PathVariable Long id) {
         Member member = memberService.findById(id);
-        return ResponseEntity.ok(member);
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", member.getName());
+        response.put("email", member.getEmail());
+        return ResponseEntity.ok(response);
     }
     
-    @GetMapping("/email/{email}")
-    public ResponseEntity<Member> getMemberByEmail(@PathVariable String email) {
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> findMemberByEmail(@RequestParam String email) {
         Member member = memberService.findByEmail(email);
-        return ResponseEntity.ok(member);
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", member.getName());
+        response.put("email", member.getEmail());
+        return ResponseEntity.ok(response);
     }
 }
